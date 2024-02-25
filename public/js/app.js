@@ -1,4 +1,4 @@
-let username = 'Pushpankar';
+let username = 'Anonymous';
 let socket = io()
 // do {
 //     username = prompt('Enter your name: ')
