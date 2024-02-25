@@ -93,7 +93,7 @@ function debounce(func, timer) {
 }
 let typingDiv = document.querySelector('.typing')
 socket.on('typing', (data) => {
-    typingDiv.innerText = `${data.username} is typing...`
+    typingDiv.innerText = `Anonymous is typing...`
     debounce(function() {
         typingDiv.innerText = ''
     }, 1000)
