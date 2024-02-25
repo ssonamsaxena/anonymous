@@ -1,4 +1,4 @@
-let username = 'Anonmyous';
+let username = 'Pushpankar';
 let socket = io()
 // do {
 //     username = prompt('Enter your name: ')
@@ -7,6 +7,7 @@ let socket = io()
 const textarea = document.querySelector('#textarea')
 const submitBtn = document.querySelector('#submitBtn')
 const commentBox = document.querySelector('.comment__box')
+const noOfConnections = document.querySelector("#noOfConnections");
 
 submitBtn.addEventListener('click', (e) => {
     e.preventDefault()
@@ -21,7 +22,8 @@ function postComment(comment) {
     // Append to dom
     let data = {
         username: username,
-        comment: comment
+        comment: comment,
+        likes: 0,
     }
     appendToDom(data)
     textarea.value = ''
@@ -37,25 +39,58 @@ function appendToDom(data) {
     lTag.classList.add('comment', 'mb-3')
 
     let markup = `
-                        <div class="card border-light mb-3">
-                            <div class="card-body">
-                                <h6>${data.username}</h6>
-                                <p>${data.comment}</p>
-                                <div>
-                                    <img src="/img/clock.png" alt="clock">
-                                    <small>${moment(data.time).format('LT')}</small>
-                                </div>
-                            </div>
-                        </div>
-    `
-    lTag.innerHTML = markup
+        <div class="card border-light mb-3">
+            <div class="card-body">
+                <h6>Anonymous</h6>
+                <p>${data.comment}</p>
+                <div>
+                    <img src="/img/clock.png" alt="clock">
+                    <small>${moment(data.time).format('LT')}</small>
+                </div>
+                <button class="like-btn" data-id="${data._id}">Like</button>
+                <span class="like-count">${data.likes || 0}</span>
+               
+            </div>
+        </div>
+    `;
 
-    commentBox.prepend(lTag)
+    lTag.innerHTML = markup;
+    
+    commentBox.prepend(lTag);
 }
+
+function increaseLike(commentId) {
+    
+    
+    const commentElement = document.querySelector(`[data-id="${commentId}"]`);
+    const likeCountElement = commentElement.nextElementSibling;
+    likeCountElement.textContent = parseInt(likeCountElement.textContent, 10) + 1;
+    socket.emit('likeComment', { commentId });
+   
+    // Update local state for UI refresh
+   
+}
+commentBox.addEventListener('click', function(e) {
+    if (e.target && e.target.matches('.like-btn')) {
+        const commentId = e.target.getAttribute('data-id');
+        if (commentId) {
+            increaseLike(commentId);
+        }
+    }
+});
 
 function broadcastComment(data) {
     // Socket
     socket.emit('comment', data)
+    // Update local state for UI refresh
+    const existingComments = [...document.querySelectorAll(".comment")];
+    if (!existingComments.some(el => el.dataset.id === data._id)) {
+        appendToDom(data);
+    } else {
+        const updatedCommentEl = document.querySelector(`[data-id="${data._id}"]`);
+        const likeCountElement = updatedCommentEl.nextElementSibling;
+        likeCountElement.textContent = data.likes;
+    }
 }
 
 socket.on('comment', (data) => {
@@ -77,6 +112,26 @@ socket.on('typing', (data) => {
         typingDiv.innerText = ''
     }, 1000)
 })
+
+
+
+
+
+
+
+socket.on('commentLiked', (updatedComment) => {
+    const commentElement = document.querySelector(`[data-id="${updatedComment._id}"]`);
+    if (commentElement) {
+        const likeCountElement = commentElement.nextElementSibling;
+        likeCountElement.textContent = updatedComment.likes;
+    }
+});
+
+socket.on('connections',(connections)=>{
+   if(noOfConnections){
+      noOfConnections.innerText = `Live Users : ${connections}`;
+   }
+});
 
 // Event listner on textarea
 textarea.addEventListener('keyup', (e) => {
