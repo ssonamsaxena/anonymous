@@ -7,7 +7,7 @@ let socket = io()
 const textarea = document.querySelector('#textarea')
 const submitBtn = document.querySelector('#submitBtn')
 const commentBox = document.querySelector('.comment__box')
-const noOfConnections = document.querySelector("#noOfConnections");
+// const noOfConnections = document.querySelector("#noOfConnections");
 
 submitBtn.addEventListener('click', (e) => {
     e.preventDefault()
@@ -113,11 +113,11 @@ socket.on('commentLiked', (updatedComment) => {
     }
 });
 
-socket.on('connections',(connections)=>{
-   if(noOfConnections){
-      noOfConnections.innerText = `Live Users : ${connections}`;
-   }
-});
+// socket.on('connections',(connections)=>{
+//    if(noOfConnections){
+//       noOfConnections.innerText = `Live Users : ${connections}`;
+//    }
+// });
 
 // Event listner on textarea
 textarea.addEventListener('keyup', (e) => {
