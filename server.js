@@ -10,7 +10,7 @@ dbConnect()
 const Comment = require('./models/comment')
 
 app.use(express.json())
-let noOfConnections = 0;
+// let noOfConnections = 0;
 
 // Routes 
 app.post('/api/comments', (req, res) => {
@@ -38,8 +38,8 @@ const server = app.listen(port, () => {
 let io = require('socket.io')(server)
 
 io.on('connection', (socket) => {
-    noOfConnections++;
-    io.emit("connections",noOfConnections);
+    //noOfConnections++;
+    //io.emit("connections",noOfConnections);
     console.log(`New connection: ${socket.id}`)
     // Recieve event
     socket.on('comment', (data) => {
@@ -50,8 +50,8 @@ io.on('connection', (socket) => {
     socket.on('typing', (data) => {
         socket.broadcast.emit('typing', data) 
     })
-    socket.on('disconnect', () => {
-        noOfConnections--;
-        io.emit("connections",noOfConnections);
-    });
+    // socket.on('disconnect', () => {
+    //     noOfConnections--;
+    //     io.emit("connections",noOfConnections);
+    // });
 })
