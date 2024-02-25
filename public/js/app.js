@@ -47,9 +47,6 @@ function appendToDom(data) {
                     <img src="/img/clock.png" alt="clock">
                     <small>${moment(data.time).format('LT')}</small>
                 </div>
-                <button class="like-btn" data-id="${data._id}">Like</button>
-                <span class="like-count">${data.likes || 0}</span>
-               
             </div>
         </div>
     `;
@@ -59,17 +56,6 @@ function appendToDom(data) {
     commentBox.prepend(lTag);
 }
 
-function increaseLike(commentId) {
-    
-    
-    const commentElement = document.querySelector(`[data-id="${commentId}"]`);
-    const likeCountElement = commentElement.nextElementSibling;
-    likeCountElement.textContent = parseInt(likeCountElement.textContent, 10) + 1;
-    socket.emit('likeComment', { commentId });
-   
-    // Update local state for UI refresh
-   
-}
 commentBox.addEventListener('click', function(e) {
     if (e.target && e.target.matches('.like-btn')) {
         const commentId = e.target.getAttribute('data-id');
