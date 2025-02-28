@@ -2,7 +2,7 @@ require("dotenv").config();
 function dbConnect() {
     // Db connection
     const mongoose = require('mongoose');
-    const url =process.env.MONGODB_URL;
+    const url ="mongodb+srv://kpushpankar3:pushpa123@cluster0.niuybvk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
     mongoose.connect(url, {
         useNewUrlParser: true,
